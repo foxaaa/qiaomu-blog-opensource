@@ -23,17 +23,56 @@ if (!/^https:\/\//.test(siteUrl)) {
   throw new Error('NEXT_PUBLIC_SITE_URL must start with https://')
 }
 
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+function setBindingFields(config, tableName, bindingName, fields) {
+  const tablePattern = new RegExp(
+    `(\\[\\[${escapeRegExp(tableName)}\\]\\][\\s\\S]*?)(?=\\r?\\n\\[|$)`,
+  )
+  const newline = config.includes('\r\n') ? '\r\n' : '\n'
+  let updated = false
+
+  const nextConfig = config.replace(tablePattern, (block) => {
+    const bindingPattern = new RegExp(
+      `^([ \\t]*binding[ \\t]*=[ \\t]*"${escapeRegExp(bindingName)}"[ \\t]*)$`,
+      'm',
+    )
+    if (!bindingPattern.test(block)) return block
+
+    let normalizedBlock = block
+    for (const key of Object.keys(fields)) {
+      normalizedBlock = normalizedBlock.replace(
+        new RegExp(`^[ \\t]*${escapeRegExp(key)}[ \\t]*=.*(?:\\r?\\n|$)`, 'gm'),
+        '',
+      )
+    }
+
+    const fieldLines = Object.entries(fields)
+      .map(([key, value]) => `${key} = "${value}"`)
+      .join(newline)
+    updated = true
+    return normalizedBlock.replace(bindingPattern, `$1${newline}${fieldLines}`)
+  })
+
+  if (!updated) {
+    throw new Error(`Missing ${tableName} binding: ${bindingName}`)
+  }
+
+  return nextConfig
+}
+
 let config = readFileSync(sourcePath, 'utf8')
 config = config.replace(/^name\s*=\s*"[^"]+"/m, `name = "${workerName}"`)
 config = config.replace(/service\s*=\s*"[^"]+"/, `service = "${workerName}"`)
-config = config.replace(
-  /(\[\[d1_databases\]\]\s*\r?\n\s*binding\s*=\s*"DB")/,
-  `$1\ndatabase_name = "${databaseName}"\ndatabase_id = "${databaseId}"`,
-)
-config = config.replace(
-  /(\[\[r2_buckets\]\]\s*\r?\n\s*binding\s*=\s*"IMAGES")/,
-  `$1\nbucket_name = "${bucketName}"`,
-)
+config = setBindingFields(config, 'd1_databases', 'DB', {
+  database_name: databaseName,
+  database_id: databaseId,
+})
+config = setBindingFields(config, 'r2_buckets', 'IMAGES', {
+  bucket_name: bucketName,
+})
 config = config.replace(
   /NEXT_PUBLIC_SITE_URL\s*=\s*"[^"]+"/,
   `NEXT_PUBLIC_SITE_URL = "${siteUrl}"`,
