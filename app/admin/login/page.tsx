@@ -57,7 +57,7 @@ function AdminLoginForm() {
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-[#1f6f59] text-white text-xl font-bold mb-4">
             乔
           </div>
-          <h1 className="text-2xl font-bold text-[var(--editor-ink)]">乔木博客</h1>
+          <h1 className="text-2xl font-bold text-[var(--editor-ink)]">笔尖时光</h1>
           <p className="text-sm text-[var(--editor-muted)] mt-1">管理后台</p>
         </div>
 

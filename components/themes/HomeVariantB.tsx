@@ -38,8 +38,8 @@ function EditorialNavBar({
   navLinks: SiteNavLink[]
 }) {
   const defaultLinks = [
-    { label: 'GitHub', url: 'https://github.com/joeseesun/', openInNewTab: true },
-    { label: 'Twitter', url: 'https://x.com/vista8/', openInNewTab: true },
+    { label: 'GitHub', url: 'https://github.com/foxaaa/', openInNewTab: true },
+    { label: 'Twitter', url: 'https://x.com/fox2037aaa/', openInNewTab: true },
     { label: 'RSS', url: '/feed.xml', openInNewTab: false },
   ]
   const links = navLinks.length > 0 ? navLinks : defaultLinks
@@ -126,7 +126,7 @@ export function HomeVariantB({
             fontFamily: '"Noto Serif SC", "Source Han Serif SC", Georgia, serif',
             color: FG,
           }}>
-            乔木<span style={{ color: ACCENT }}>·</span>博客
+            笔尖<span style={{ color: ACCENT }}>·</span>时光
           </h1>
         </Link>
         <div className="editorial-masthead-meta" style={{

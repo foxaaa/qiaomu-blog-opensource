@@ -19,8 +19,8 @@ interface SiteHeaderProps {
 }
 
 const defaultNavLinks: NavLink[] = [
-  { label: 'GitHub', url: 'https://github.com/joeseesun/', openInNewTab: true },
-  { label: 'Twitter', url: 'https://x.com/vista8/', openInNewTab: true },
+  { label: 'GitHub', url: 'https://github.com/foxaaa/', openInNewTab: true },
+  { label: 'Twitter', url: 'https://x.com/fox2037aaa/', openInNewTab: true },
   { label: 'RSS', url: '/feed.xml', openInNewTab: false },
 ]
 
@@ -99,7 +99,7 @@ export function SiteHeader({
           suppressHydrationWarning
         >
           <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#4ade80', display: 'inline-block', boxShadow: '0 0 8px #4ade80', flexShrink: 0 }} />
-          <span style={{ color: 'var(--editor-muted)' }}>qiaomu@blog:~$</span>
+          <span style={{ color: 'var(--editor-muted)' }}>foxaaa@blog:~$</span>
           <span style={{ color: 'var(--editor-ink)' }}>./home</span>
         </Link>
       )

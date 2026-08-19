@@ -34,8 +34,8 @@ function TerminalHeader({
   navLinks: SiteNavLink[]
 }) {
   const defaultLinks = [
-    { label: '~/github', url: 'https://github.com/joeseesun/', openInNewTab: true },
-    { label: '~/twitter', url: 'https://x.com/vista8/', openInNewTab: true },
+    { label: '~/github', url: 'https://github.com/foxaaa/', openInNewTab: true },
+    { label: '~/twitter', url: 'https://x.com/fox2037aaa/', openInNewTab: true },
     { label: '~/rss', url: '/feed.xml', openInNewTab: false },
   ]
   const links = navLinks.length > 0
@@ -55,7 +55,7 @@ function TerminalHeader({
       {/* Left: terminal prompt */}
       <div className="terminal-home-prompt" style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
         <span style={{ width: 10, height: 10, borderRadius: '50%', background: ACCENT, display: 'inline-block', boxShadow: `0 0 10px ${ACCENT}` }} />
-        <Link href="/" style={{ color: MUTED, textDecoration: 'none' }}>qiaomu@blog:~$</Link>
+        <Link href="/" style={{ color: MUTED, textDecoration: 'none' }}>foxaaa@blog:~$</Link>
         <span style={{ color: FG }}>./serve --port=443</span>
       </div>
 
@@ -174,7 +174,7 @@ export function HomeVariantC({
             overflow: 'hidden',
           }}>
 {`  ┌────────────────────────────────────┐
-  │  QIAOMU BLOG  ·  笔尖时光          │
+  │  BLOG  ·  笔尖时光          │
   │  ~/posts  —  reading the future     │
   └────────────────────────────────────┘`}
           </div>

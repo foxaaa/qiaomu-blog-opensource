@@ -40,10 +40,10 @@ const DEFAULT_SITE_OG_IMAGE = resolveDefaultSiteCoverImage(SITE_URL)
 export const metadata: Metadata = {
   metadataBase: getSiteUrlObject(),
   title: {
-    default: '乔木博客',
-    template: '%s · 乔木博客',
+    default: '笔尖时光',
+    template: '%s · 笔尖时光',
   },
-  description: '记录思考，分享所学，留住当下。技术、生活、读书笔记的数字花园。',
+  description: '慢一点写，也慢一点读。',
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },
@@ -64,24 +64,24 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'zh_CN',
     url: SITE_URL,
-    siteName: '乔木博客',
-    title: '乔木博客',
-    description: '记录思考，分享所学，留住当下。技术、生活、读书笔记的数字花园。',
+    siteName: '笔尖时光',
+    title: '笔尖时光',
+    description: '慢一点写，也慢一点读。',
     images: [
       {
         url: DEFAULT_SITE_OG_IMAGE,
         width: 1280,
         height: 720,
-        alt: '乔木博客',
+        alt: '笔尖时光',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    site: '@vista8',
-    creator: '@vista8',
-    title: '乔木博客',
-    description: '记录思考，分享所学，留住当下。技术、生活、读书笔记的数字花园。',
+    site: '@fox2037aaa',
+    creator: '@fox2037aaa',
+    title: '笔尖时光',
+    description: '慢一点写，也慢一点读。',
     images: [DEFAULT_SITE_OG_IMAGE],
   },
 };
