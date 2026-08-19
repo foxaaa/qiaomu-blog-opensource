@@ -23,9 +23,12 @@ service = "qiaomu-blog-opensource"
 
 [[d1_databases]]
 binding = "DB"
+database_name = "blog" 
+database_id ="bcc06123-f695-425e-a628-692b7c24080c"
 
 [[r2_buckets]]
 binding = "IMAGES"
+bucket_name = "blog"
 
 # Optional Queue binding for background jobs. Uncomment after creating the queue.
 # [[queues.producers]]

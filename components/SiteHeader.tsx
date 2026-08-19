@@ -114,7 +114,7 @@ export function SiteHeader({
             className="text-lg tracking-tight text-[var(--editor-ink)] hover:text-[var(--editor-accent)] transition-colors duration-200 font-bold"
             style={{ fontFamily: 'var(--logo-font, "Noto Serif SC", Georgia, serif)' }}
           >
-            乔木博客
+            笔尖时光
           </Link>
           <span style={{ fontFamily: '"JetBrains Mono", ui-monospace, monospace', fontSize: 11, letterSpacing: '0.15em', color: 'var(--editor-muted)' }}>
             VOL.{vol} · {year}年{month}月
@@ -129,7 +129,7 @@ export function SiteHeader({
         className="text-lg tracking-tight text-[var(--editor-ink)] hover:text-[var(--editor-accent)] transition-colors duration-200 flex-shrink-0 font-bold"
         style={{ fontFamily: 'var(--logo-font, Georgia, "Noto Serif SC", serif)' }}
       >
-        乔木博客
+        笔尖时光
       </Link>
     )
   }

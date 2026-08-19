@@ -174,13 +174,13 @@ export function HomeVariantC({
             overflow: 'hidden',
           }}>
 {`  ┌────────────────────────────────────┐
-  │  QIAOMU BLOG  ·  乔木博客          │
+  │  QIAOMU BLOG  ·  笔尖时光          │
   │  ~/posts  —  reading the future     │
   └────────────────────────────────────┘`}
           </div>
           <div className="terminal-banner-meta" style={{ marginTop: 14, fontSize: 14, display: 'flex', alignItems: 'center', gap: 10 }}>
             <span style={{ color: ACCENT2 }}>&gt;</span>
-            <span style={{ color: FG }}>乔木博客</span>
+            <span style={{ color: FG }}>笔尖时光</span>
             <span style={{ color: MUTED }}>{'//'}</span>
             <span style={{ color: MUTED }}>
               {typed}
