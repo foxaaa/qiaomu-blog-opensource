@@ -26,7 +26,7 @@ binding = "DB"
 database_name = "blog" 
 
 [[r2_buckets]]
-binding = "BUCKET"
+binding = "IMAGES"
 bucket_name = "blog"
 
 # Optional Queue binding for background jobs. Uncomment after creating the queue.
