@@ -100,7 +100,7 @@ fi
 site_url_override="${SITE_URL}" perl -0pi -e 's/NEXT_PUBLIC_SITE_URL = ".*?"/NEXT_PUBLIC_SITE_URL = "$ENV{site_url_override}"/g' "${LOCAL_CONFIG_PATH}"
 
 if ! section_has_key "d1_databases" "database_id" "${LOCAL_CONFIG_PATH}"; then
-  if rg -q '^\[\[d1_databases\]\]' "${LOCAL_CONFIG_PATH}"; then
+  if grep  -q '^\[\[d1_databases\]\]' "${LOCAL_CONFIG_PATH}"; then
     strip_array_section "d1_databases" "${LOCAL_CONFIG_PATH}"
   fi
 
@@ -112,7 +112,7 @@ if ! section_has_key "d1_databases" "database_id" "${LOCAL_CONFIG_PATH}"; then
 fi
 
 if ! section_has_key "r2_buckets" "bucket_name" "${LOCAL_CONFIG_PATH}"; then
-  if rg -q '^\[\[r2_buckets\]\]' "${LOCAL_CONFIG_PATH}"; then
+  if grep  -q '^\[\[r2_buckets\]\]' "${LOCAL_CONFIG_PATH}"; then
     strip_array_section "r2_buckets" "${LOCAL_CONFIG_PATH}"
   fi
 
@@ -122,7 +122,7 @@ if ! section_has_key "r2_buckets" "bucket_name" "${LOCAL_CONFIG_PATH}"; then
     -c "${LOCAL_CONFIG_PATH}"
 fi
 
-if [[ "${WITH_KV}" == "1" ]] && ! rg -q '^\[\[kv_namespaces\]\]' "${LOCAL_CONFIG_PATH}"; then
+if [[ "${WITH_KV}" == "1" ]] && ! grep  -q '^\[\[kv_namespaces\]\]' "${LOCAL_CONFIG_PATH}"; then
   npx wrangler kv namespace create "${KV_NAME}" \
     --binding CACHE \
     --update-config \
