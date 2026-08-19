@@ -23,12 +23,9 @@ service = "qiaomu-blog-opensource"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "blog" 
-database_id ="bcc06123-f695-425e-a628-692b7c24080c"
 
 [[r2_buckets]]
 binding = "IMAGES"
-bucket_name = "blog"
 
 # Optional Queue binding for background jobs. Uncomment after creating the queue.
 # [[queues.producers]]
@@ -39,7 +36,7 @@ bucket_name = "blog"
 # queue = "qiaomu-blog-background-jobs"
 
 [vars]
-NEXT_PUBLIC_SITE_URL = "https://blog.hn-wow.top"
+NEXT_PUBLIC_SITE_URL = "https://your-domain.com"
 AI_BASE_URL = "https://api.openai.com/v1"
 AI_MODEL = "gpt-4o-mini"
 WORKERS_AI_MODEL = "@cf/meta/llama-3.1-8b-instruct"

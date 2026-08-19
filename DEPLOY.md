@@ -1,112 +1,136 @@
-# 部署指南
+# Cloudflare 部署指南
 
-Qiaomu Blog Open Source 的正式部署方式是 `OpenNext + Cloudflare Workers`。
+项目使用 `Next.js + OpenNext + Cloudflare Workers + D1 + R2`。推荐把仓库上传到 GitHub，由 GitHub Actions 在 Linux 环境自动构建并发布；Windows 本机只负责开发、资源初始化和查看日志。
 
-## 首次部署
+## 一、创建 Cloudflare 资源
 
-### 1. 安装依赖和环境变量
+安装依赖并登录：
 
-```bash
-npm install
-cp .env.example .env.local
-```
-
-至少填写：
-
-```env
-ADMIN_PASSWORD=change-me
-ADMIN_TOKEN_SALT=change-me-to-a-random-string
-AI_CONFIG_ENCRYPTION_SECRET=change-me-to-another-random-string
-NEXT_PUBLIC_SITE_URL=https://your-domain.com
-```
-
-### 2. 登录 Cloudflare
-
-```bash
+```powershell
+npm ci
 npx wrangler login
 ```
 
-### 3. 初始化资源
+创建 D1 数据库和 R2 Bucket：
 
-```bash
-npm run cf:init -- --site-url=https://your-domain.com
+```powershell
+npx wrangler d1 create qiaomu-blog-db
+npx wrangler r2 bucket create qiaomu-blog-images
 ```
 
-如果还要启用公共缓存 KV：
+保存 D1 命令返回的 `database_id`。查看账户 ID：
 
-```bash
-npm run cf:init -- --site-url=https://your-domain.com --with-kv
+```powershell
+npx wrangler whoami
 ```
 
-这一步会生成本地的 `wrangler.local.toml`，并自动写入真实 D1 / R2 / KV 绑定。
+## 二、配置 GitHub
 
-### 4. 设置 secrets
+打开 GitHub 仓库的 `Settings > Secrets and variables > Actions`。
 
-```bash
-npx wrangler secret put ADMIN_PASSWORD -c wrangler.local.toml
-npx wrangler secret put ADMIN_TOKEN_SALT -c wrangler.local.toml
-npx wrangler secret put AI_CONFIG_ENCRYPTION_SECRET -c wrangler.local.toml
+### Repository Secrets
+
+| 名称 | 说明 |
+| --- | --- |
+| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare Account ID |
+| `CLOUDFLARE_API_TOKEN` | 具备 Workers、D1、R2 编辑权限的 API Token |
+| `ADMIN_PASSWORD` | 博客后台登录密码 |
+| `ADMIN_TOKEN_SALT` | 管理员 Token 签名盐，使用随机长字符串 |
+| `AI_CONFIG_ENCRYPTION_SECRET` | AI 配置加密密钥，使用随机长字符串 |
+| `AI_API_KEY` | 可选，默认外部 AI 服务的 API Key |
+
+### Repository Variables
+
+| 名称 | 示例 |
+| --- | --- |
+| `CF_D1_DATABASE_ID` | 创建 D1 后返回的 UUID |
+| `CF_D1_DATABASE_NAME` | `qiaomu-blog-db` |
+| `CF_R2_BUCKET_NAME` | `qiaomu-blog-images` |
+| `CF_WORKER_NAME` | `qiaomu-blog-opensource` |
+| `NEXT_PUBLIC_SITE_URL` | `https://blog.example.com` |
+
+`CF_D1_DATABASE_ID`、`CF_R2_BUCKET_NAME` 和 `NEXT_PUBLIC_SITE_URL` 未配置时，自动部署任务会跳过，避免开源仓库被 Fork 后立刻报错。
+
+## 三、推送并自动部署
+
+提交代码并推送到 `main`：
+
+```powershell
+git add .
+git commit -m "fix: restore Cloudflare deployment"
+git push origin main
 ```
 
-如需外部 AI：
+GitHub Actions 会自动：
 
-```bash
-npx wrangler secret put AI_API_KEY -c wrangler.local.toml
+1. 在 Ubuntu 上安装锁定依赖。
+2. 生成仅存在于 CI Runner 的 Wrangler 配置。
+3. 初始化本地 D1 并构建 OpenNext Worker。
+4. 运行测试。
+5. 幂等更新远程 D1 schema 和模板默认数据。
+6. 部署 Worker，并同步应用 Secrets。
+
+在 GitHub 仓库的 `Actions > Deploy to Cloudflare` 查看进度，也可以使用 `Run workflow` 手动重新部署。
+
+## 四、自定义域名
+
+首次部署完成后，在 Cloudflare Dashboard 中打开：
+
+`Workers & Pages > 你的 Worker > Settings > Domains & Routes`
+
+绑定 `NEXT_PUBLIC_SITE_URL` 对应的域名。DNS 必须由同一个 Cloudflare 账户管理。
+
+## 本地开发
+
+初始化本地 D1 模拟数据库：
+
+```powershell
+npm run cf:db:local
+npm run dev
 ```
 
-### 5. 生成类型并部署
+本地开发默认使用 Wrangler 的 D1/R2 模拟环境，不会修改远程生产数据。
+
+## 手动部署
+
+先使用 `npm run cf:init` 生成不入库的 `wrangler.local.toml`，然后部署：
 
 ```bash
-npm run cf-typegen
-npm run build
+npm run cf:init -- --site-url=https://blog.example.com
 npm run deploy
 ```
 
-## 本地 Worker 预览
+`cf:init` 是 Bash 脚本。Windows 请在 Git Bash 或 WSL 中执行。OpenNext 会警告 Windows 原生生产构建可能不完整，因此正式发布应优先使用 GitHub Actions。
 
-```bash
-npm run preview
+## 排错
+
+### Worker 超过免费包体限制
+
+```powershell
+npm run cf:dry-run
 ```
 
-脚本会优先读取 `wrangler.local.toml`。模板仓库里的 `wrangler.toml` 不带真实资源绑定，不能直接拿来部署生产。
+Windows 生成的 OpenNext 包体不能作为最终判断依据，请以 GitHub Actions 的 Linux 日志为准。
 
-## 日常更新
+### `no such table`
 
-```bash
-git pull
-npm install
-npm run verify
-npm run deploy
+本地执行：
+
+```powershell
+npm run cf:db:local
 ```
 
-## 常见问题
+远程手动执行：
 
-### `npm run deploy` 报缺少 D1 或 R2
-
-先执行：
-
-```bash
-npm run cf:init -- --site-url=https://your-domain.com
+```powershell
+$env:WRANGLER_CONFIG = "wrangler.local.toml"
+npm run cf:db:remote
 ```
 
-### 后台登录提示鉴权未配置完成
+### GitHub Actions 被跳过
 
-至少补齐：
+确认 Repository Variables 中已经配置：
 
-```bash
-npx wrangler secret put ADMIN_PASSWORD -c wrangler.local.toml
-npx wrangler secret put ADMIN_TOKEN_SALT -c wrangler.local.toml
-```
-
-### AI Provider 已保存的 Key 无法解密
-
-通常是 `AI_CONFIG_ENCRYPTION_SECRET` 或 `ADMIN_TOKEN_SALT` 被改了。建议固定 `AI_CONFIG_ENCRYPTION_SECRET`，不要和 token salt 复用。
-
-### RSS / sitemap / canonical 指向错域名
-
-检查：
-
-- `.env.local`
-- `wrangler.local.toml`
-
-两处的 `NEXT_PUBLIC_SITE_URL` 必须一致。
+- `CF_D1_DATABASE_ID`
+- `CF_R2_BUCKET_NAME`
+- `NEXT_PUBLIC_SITE_URL`

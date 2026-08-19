@@ -1,6 +1,5 @@
 # Qiaomu Blog Open Source
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/joeseesun/qiaomu-blog-opensource)
 [![Use this template](https://img.shields.io/badge/GitHub-Use%20this%20template-111111?logo=github)](https://github.com/joeseesun/qiaomu-blog-opensource/generate)
 
 如果你也想拥有一个真正属于自己的学习、写作、分享阵地，而不是把内容完全寄托在平台算法上，这个项目就是为此做的。
@@ -65,43 +64,22 @@ Qiaomu Blog Open Source 不是一个只会渲染 Markdown 的静态模板，而�
 - [`ecosystem/qiaomu-blog-publish-skill`](ecosystem/qiaomu-blog-publish-skill/README.md)：通过 Claude Skill / 命令工作流直接发布
 - [`ecosystem/README.md`](ecosystem/README.md)：生态工具总览
 
-## 一键部署到 Cloudflare
+## 部署
 
-直接点击上面的 `Deploy to Cloudflare` 按钮即可。
+推荐使用仓库自带的 GitHub Actions。完成一次 Cloudflare 与 GitHub Secrets/Variables 配置后，每次推送 `main` 都会自动在 Linux 环境构建、更新 D1 并发布 Worker。
 
-这个模板已经补好了适合 Deploy Button 的配置：
-
-- Cloudflare 会读取仓库里的 Worker 配置
-- 自动创建需要的 `D1` / `R2` 绑定
-- 使用仓库里的自定义 deploy script
-- 部署时自动应用数据库 schema 和模板默认配置
-
-部署时建议准备这些值：
-
-- `NEXT_PUBLIC_SITE_URL`
-- `ADMIN_PASSWORD`
-- `ADMIN_TOKEN_SALT`
-- `AI_CONFIG_ENCRYPTION_SECRET`
-- `AI_API_KEY`（可选）
-
-如果你更想手动掌控 Cloudflare 资源，也可以走 CLI：
-
-```bash
-npm install
-cp .env.example .env.local
-npx wrangler login
-npm run cf:init -- --site-url=https://your-domain.com
-npm run build
-npm run deploy
-```
+完整步骤见 [`DEPLOY.md`](DEPLOY.md)。
 
 ## 本地开发
+
+本地开发使用 Wrangler 提供的 D1/R2 模拟环境，不会修改远程生产数据。请使用 Node.js 22.5 或更高版本。
 
 ```bash
 git clone https://github.com/joeseesun/qiaomu-blog-opensource.git
 cd qiaomu-blog-opensource
 npm install
 cp .env.example .env.local
+npm run cf:db:local
 npm run dev
 ```
 
@@ -110,12 +88,6 @@ npm run dev
 - 首页：`/`
 - 后台：`/admin`
 - 编辑器：`/editor`
-
-如果你要在 Worker 运行时本地预览：
-
-```bash
-npm run preview
-```
 
 ## 默认初始化内容
 
@@ -129,7 +101,7 @@ npm run preview
 - 文章摘要、标签、slug、封面生成器
 - 编辑器 Ask AI 预设动作
 
-所有 API Key 都不会进入仓库，首次部署时通过 Cloudflare secret 或后台配置补齐。
+所有 API Key 都不会进入仓库。GitHub 自动部署通过 Repository Secrets 同步 Worker Secrets，资源 ID 和域名通过 Repository Variables 注入临时 CI 配置。
 
 ## 技术栈
 
@@ -150,9 +122,10 @@ npm run preview
 | `npm run build` | 构建应用 |
 | `npm run verify:quick` | 跑 lint、test、build |
 | `npm run verify` | 跑完整验证链路 |
-| `npm run cf:init` | 初始化 Cloudflare 资源和模板默认设置 |
-| `npm run preview` | Worker 运行时预览 |
-| `npm run deploy` | 部署到 Cloudflare Workers |
+| `npm run cf:db:local` | 初始化本地 D1 模拟数据库 |
+| `npm run cf:build` | 构建 OpenNext Worker |
+| `npm run cf:dry-run` | 构建并检查 Worker 上传包体 |
+| `npm run deploy` | 手动构建并部署到 Cloudflare |
 
 ## 作者
 

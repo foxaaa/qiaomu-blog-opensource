@@ -1,4 +1,4 @@
-import { getCloudflareContext } from '@opennextjs/cloudflare'
+import { getCloudflareContext } from '@opennextjs/cloudflare/cloudflare-context'
 
 export async function getAppCloudflareContext() {
   return getCloudflareContext({ async: true })
