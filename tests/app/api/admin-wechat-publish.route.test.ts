@@ -24,6 +24,7 @@ vi.mock('@/lib/wechat-bridge-config', () => ({
 }))
 
 import { POST } from '@/app/api/admin/wechat-publish/route'
+import { getSiteUrl } from '@/lib/site-config'
 
 describe('/api/admin/wechat-publish route', () => {
   beforeEach(() => {
@@ -126,6 +127,8 @@ describe('/api/admin/wechat-publish route', () => {
     expect(forwarded.author).toBe('向阳乔木')
     expect(forwarded.need_open_comment).toBe(true)
     expect(forwarded.only_fans_can_comment).toBe(false)
-    expect(forwarded.cover_image_url).toMatch(/^https:\/\/blog\.qiaomu\.ai\/default-covers\/qm-cover-[1-3]\.jpg$/)
+    const coverImageUrl = new URL(forwarded.cover_image_url)
+    expect(coverImageUrl.origin).toBe(new URL(getSiteUrl()).origin)
+    expect(coverImageUrl.pathname).toMatch(/^\/default-covers\/qm-cover-[1-3]\.jpg$/)
   })
 })
