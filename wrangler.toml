@@ -22,10 +22,10 @@ service = "qiaomu-blog-opensource"
 # `npm run cf:init` will replace them in `wrangler.local.toml` with concrete remote bindings.
 
 [[d1_databases]]
-binding = "DB"
+binding = "blog"
 
 [[r2_buckets]]
-binding = "IMAGES"
+binding = "blog"
 
 # Optional Queue binding for background jobs. Uncomment after creating the queue.
 # [[queues.producers]]
