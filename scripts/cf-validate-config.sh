@@ -33,12 +33,12 @@ require_binding() {
 require_binding "\\[\\[d1_databases\\]\\]" 'binding = "DB"' "D1"
 require_binding "\\[\\[r2_buckets\\]\\]" 'binding = "IMAGES"' "R2"
 
-if ! grep -q 'NEXT_PUBLIC_SITE_URL[[:space:]]*=[[:space:]]*"https?://[^"]+"' "${CONFIG_PATH}"; then
-  echo "❌ Missing NEXT_PUBLIC_SITE_URL in ${CONFIG_PATH}" >&2
+if ! grep -Eq 'NEXT_PUBLIC_SITE_URL[[:space:]]*=[[:space:]]*"https?://[^"]+"' "${CONFIG_PATH}"; then
+  echo "❌ Missing NEXT_PUBLIC_SITE_URL 应该 in ${CONFIG_PATH}" >&2
   exit 1
 fi
 
-if grep -q 'NEXT_PUBLIC_SITE_URL[[:space:]]*=[[:space:]]*"https?://(localhost|127\.0\.0\.1|0\.0\.0\.0|example\.com)(:[0-9]+)?/?\"' "${CONFIG_PATH}"; then
+if grep -Eq 'NEXT_PUBLIC_SITE_URL[[:space:]]*=[[:space:]]*"https?://(localhost|127\.0\.0\.1|0\.0\.0\.0|example\.com)(:[0-9]+)?/?\"' "${CONFIG_PATH}"; then
   echo "❌ NEXT_PUBLIC_SITE_URL points to a local or placeholder host in ${CONFIG_PATH}" >&2
   exit 1
 fi
